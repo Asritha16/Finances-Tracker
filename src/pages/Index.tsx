@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Plus, Wallet, TrendingUp, TrendingDown } from 'lucide-react';
+import { Plus, Wallet } from 'lucide-react';
 import TransactionForm from '../components/TransactionForm';
 import BalanceCard from '../components/BalanceCard';
 import TransactionList from '../components/TransactionList';
@@ -23,7 +23,6 @@ const Index = () => {
 
   const account1Balance = calculateBalance('account1');
   const account2Balance = calculateBalance('account2');
-  const totalBalance = account1Balance + account2Balance;
 
   const recentTransactions = transactions.slice(0, 5);
 
@@ -40,7 +39,7 @@ const Index = () => {
         </div>
 
         {/* Balance Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <BalanceCard
             title="Account 1"
             balance={account1Balance}
@@ -52,13 +51,6 @@ const Index = () => {
             balance={account2Balance}
             icon={<Wallet className="text-green-600" size={24} />}
             gradient="from-green-500 to-green-600"
-          />
-          <BalanceCard
-            title="Total Balance"
-            balance={totalBalance}
-            icon={totalBalance >= 0 ? <TrendingUp className="text-purple-600" size={24} /> : <TrendingDown className="text-red-600" size={24} />}
-            gradient="from-purple-500 to-purple-600"
-            isTotal
           />
         </div>
 
