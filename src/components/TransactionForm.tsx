@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
-import { X, Calendar, DollarSign, FileText, CreditCard } from 'lucide-react';
+import { X, Calendar, FileText, CreditCard } from 'lucide-react';
+import { IndianRupee } from 'lucide-react';
 import { Transaction } from '../types/Transaction';
 
 interface TransactionFormProps {
@@ -68,7 +69,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onSubmit, onClose }) 
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                <DollarSign className="inline mr-2" size={16} />
+                <IndianRupee className="inline mr-2" size={16} />
                 Amount
               </label>
               <input

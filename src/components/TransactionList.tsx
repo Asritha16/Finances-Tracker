@@ -89,7 +89,7 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, isPrevi
               transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
             }`}>
               <span className="text-lg">
-                {transaction.type === 'income' ? '+' : '-'}{transaction.amount.toFixed(2)}
+                {transaction.type === 'income' ? '+' : '-'}₹{transaction.amount.toFixed(2)}
               </span>
             </div>
           </div>

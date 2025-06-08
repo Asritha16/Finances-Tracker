@@ -19,7 +19,7 @@ const BalanceCard: React.FC<BalanceCardProps> = ({ title, balance, icon, gradien
           <div>
             <h3 className="text-sm font-medium opacity-90">{title}</h3>
             <p className="text-2xl font-bold">
-              {Math.abs(balance).toFixed(2)}
+              ₹{Math.abs(balance).toFixed(2)}
               {isNegative && <span className="text-red-200 ml-1">(Deficit)</span>}
             </p>
           </div>
