@@ -15,6 +15,10 @@ const Index = () => {
     setShowForm(false);
   };
 
+  const deleteTransaction = (id: string) => {
+    setTransactions(prev => prev.filter(transaction => transaction.id !== id));
+  };
+
   const calculateBalance = (accountType: 'account1' | 'account2') => {
     return transactions
       .filter(t => t.account === accountType)
@@ -89,7 +93,10 @@ const Index = () => {
 
           <div className="bg-white rounded-2xl shadow-lg p-6">
             <h2 className="text-2xl font-bold text-gray-800 mb-4">All Transactions</h2>
-            <TransactionList transactions={transactions} />
+            <TransactionList 
+              transactions={transactions} 
+              onDeleteTransaction={deleteTransaction}
+            />
           </div>
         </div>
       </div>

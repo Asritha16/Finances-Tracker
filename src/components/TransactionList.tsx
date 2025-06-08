@@ -1,24 +1,31 @@
 
 import React, { useState } from 'react';
-import { ArrowUpCircle, ArrowDownCircle, Calendar, Filter } from 'lucide-react';
+import { ArrowUpCircle, ArrowDownCircle, Calendar, Trash2 } from 'lucide-react';
 import { Transaction } from '../types/Transaction';
 
 interface TransactionListProps {
   transactions: Transaction[];
   isPreview?: boolean;
+  onDeleteTransaction?: (id: string) => void;
 }
 
-const TransactionList: React.FC<TransactionListProps> = ({ transactions, isPreview = false }) => {
+const TransactionList: React.FC<TransactionListProps> = ({ transactions, isPreview = false, onDeleteTransaction }) => {
   const [filter, setFilter] = useState('all');
   const [accountFilter, setAccountFilter] = useState('all');
 
   const filteredTransactions = transactions.filter(transaction => {
     const typeMatch = filter === 'all' || transaction.type === filter;
-    const accountMatch = accountFilter === 'all' || transaction.account === accountFilter;
+    const accountMatch = accountFilter === 'all' || transaction.account === accountMatch;
     return typeMatch && accountMatch;
   });
 
   const displayTransactions = isPreview ? filteredTransactions : filteredTransactions;
+
+  const handleDelete = (id: string) => {
+    if (onDeleteTransaction && window.confirm('Are you sure you want to delete this transaction?')) {
+      onDeleteTransaction(id);
+    }
+  };
 
   if (displayTransactions.length === 0 && !isPreview) {
     return (
@@ -85,12 +92,24 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, isPrevi
               </div>
             </div>
             
-            <div className={`text-right font-bold ${
-              transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
-            }`}>
-              <span className="text-lg">
-                {transaction.type === 'income' ? '+' : '-'}₹{transaction.amount.toFixed(2)}
-              </span>
+            <div className="flex items-center gap-3">
+              <div className={`text-right font-bold ${
+                transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
+              }`}>
+                <span className="text-lg">
+                  {transaction.type === 'income' ? '+' : '-'}₹{transaction.amount.toFixed(2)}
+                </span>
+              </div>
+              
+              {!isPreview && onDeleteTransaction && (
+                <button
+                  onClick={() => handleDelete(transaction.id)}
+                  className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                  title="Delete transaction"
+                >
+                  <Trash2 size={16} />
+                </button>
+              )}
             </div>
           </div>
         ))}
