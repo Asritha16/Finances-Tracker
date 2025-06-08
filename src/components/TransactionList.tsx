@@ -15,7 +15,7 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, isPrevi
 
   const filteredTransactions = transactions.filter(transaction => {
     const typeMatch = filter === 'all' || transaction.type === filter;
-    const accountMatch = accountFilter === 'all' || transaction.account === accountMatch;
+    const accountMatch = accountFilter === 'all' || transaction.account === accountFilter;
     return typeMatch && accountMatch;
   });
 
