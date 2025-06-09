@@ -1,14 +1,27 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Wallet } from 'lucide-react';
 import TransactionForm from '../components/TransactionForm';
 import BalanceCard from '../components/BalanceCard';
 import TransactionList from '../components/TransactionList';
+import DataControls from '../components/DataControls';
 import { Transaction } from '../types/Transaction';
+import { saveTransactionsToStorage, loadTransactionsFromStorage } from '../utils/dataStorage';
 
 const Index = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [showForm, setShowForm] = useState(false);
+
+  // Load transactions from localStorage on component mount
+  useEffect(() => {
+    const savedTransactions = loadTransactionsFromStorage();
+    setTransactions(savedTransactions);
+  }, []);
+
+  // Save transactions to localStorage whenever transactions change
+  useEffect(() => {
+    saveTransactionsToStorage(transactions);
+  }, [transactions]);
 
   const addTransaction = (transaction: Transaction) => {
     setTransactions(prev => [transaction, ...prev]);
@@ -17,6 +30,10 @@ const Index = () => {
 
   const deleteTransaction = (id: string) => {
     setTransactions(prev => prev.filter(transaction => transaction.id !== id));
+  };
+
+  const handleImportTransactions = (importedTransactions: Transaction[]) => {
+    setTransactions(importedTransactions);
   };
 
   const calculateBalance = (accountType: 'account1' | 'account2') => {
@@ -57,6 +74,12 @@ const Index = () => {
             gradient="from-green-500 to-green-600"
           />
         </div>
+
+        {/* Data Management */}
+        <DataControls 
+          transactions={transactions} 
+          onImportTransactions={handleImportTransactions}
+        />
 
         {/* Action Button */}
         <div className="flex justify-center mb-8">
