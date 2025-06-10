@@ -1,8 +1,8 @@
 
 import React, { useRef } from 'react';
-import { Download, Upload, Database } from 'lucide-react';
+import { Download, Upload, Database, FileSpreadsheet } from 'lucide-react';
 import { Transaction } from '../types/Transaction';
-import { exportTransactionsToCSV, importTransactionsFromCSV } from '../utils/dataStorage';
+import { exportTransactionsToExcel, importTransactionsFromExcel } from '../utils/dataStorage';
 
 interface DataControlsProps {
   transactions: Transaction[];
@@ -17,7 +17,7 @@ const DataControls: React.FC<DataControlsProps> = ({ transactions, onImportTrans
       alert('No transactions to export');
       return;
     }
-    exportTransactionsToCSV(transactions);
+    exportTransactionsToExcel(transactions);
   };
 
   const handleImportClick = () => {
@@ -28,52 +28,61 @@ const DataControls: React.FC<DataControlsProps> = ({ transactions, onImportTrans
     const file = e.target.files?.[0];
     if (file) {
       try {
-        const importedTransactions = await importTransactionsFromCSV(file);
+        const importedTransactions = await importTransactionsFromExcel(file);
         if (window.confirm(`Import ${importedTransactions.length} transactions? This will replace your current data.`)) {
           onImportTransactions(importedTransactions);
         }
       } catch (error) {
-        alert('Error importing file. Please check the format.');
+        alert('Error importing file. Please check the Excel format.');
       }
     }
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-      <div className="flex items-center gap-2 mb-4">
-        <Database className="text-blue-600" size={24} />
-        <h2 className="text-xl font-bold text-gray-800">Data Management</h2>
+    <div className="bg-gradient-to-br from-slate-50 to-blue-50 border border-slate-200 rounded-3xl shadow-xl p-8 mb-8">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-3 rounded-2xl shadow-lg">
+          <Database className="text-white" size={24} />
+        </div>
+        <div>
+          <h2 className="text-2xl font-bold text-slate-800">Data Management</h2>
+          <p className="text-slate-600">Secure local storage with Excel backup</p>
+        </div>
       </div>
       
-      <div className="flex gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <button
           onClick={handleExport}
-          className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+          className="flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-2xl hover:from-emerald-600 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold"
         >
-          <Download size={16} />
-          Export to CSV
+          <Download size={20} />
+          <span>Export to Excel</span>
+          <FileSpreadsheet size={16} className="opacity-80" />
         </button>
         
         <button
           onClick={handleImportClick}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-2xl hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold"
         >
-          <Upload size={16} />
-          Import from CSV
+          <Upload size={20} />
+          <span>Import from Excel</span>
+          <FileSpreadsheet size={16} className="opacity-80" />
         </button>
         
         <input
           ref={fileInputRef}
           type="file"
-          accept=".csv"
+          accept=".xlsx,.xls"
           onChange={handleFileChange}
           className="hidden"
         />
       </div>
       
-      <p className="text-sm text-gray-600 mt-3">
-        Your data is automatically saved locally and never leaves your device. Export regularly for backup.
-      </p>
+      <div className="mt-6 p-4 bg-slate-100 rounded-xl border-l-4 border-blue-500">
+        <p className="text-sm text-slate-700 leading-relaxed">
+          <span className="font-semibold text-blue-700">🔒 Privacy First:</span> Your financial data is stored locally on your device and never transmitted to external servers. Export to Excel for secure backups and analysis.
+        </p>
+      </div>
     </div>
   );
 };

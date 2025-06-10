@@ -1,5 +1,6 @@
 
 import { Transaction } from '../types/Transaction';
+import * as XLSX from 'xlsx';
 
 const STORAGE_KEY = 'finance_tracker_transactions';
 
@@ -21,59 +22,49 @@ export const loadTransactionsFromStorage = (): Transaction[] => {
   }
 };
 
-export const exportTransactionsToCSV = (transactions: Transaction[]) => {
-  const headers = ['Date', 'Amount', 'Type', 'Account', 'Reason'];
-  const csvContent = [
-    headers.join(','),
-    ...transactions.map(t => [
-      t.date,
-      t.amount.toString(),
-      t.type,
-      t.account === 'account1' ? 'Account 1' : 'Account 2',
-      `"${t.reason.replace(/"/g, '""')}"` // Escape quotes in reason
-    ].join(','))
-  ].join('\n');
+export const exportTransactionsToExcel = (transactions: Transaction[]) => {
+  const worksheet = XLSX.utils.json_to_sheet(
+    transactions.map(t => ({
+      Date: t.date,
+      Amount: t.amount,
+      Type: t.type,
+      Account: t.account === 'account1' ? 'Account 1' : 'Account 2',
+      Reason: t.reason
+    }))
+  );
 
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const link = document.createElement('a');
-  const url = URL.createObjectURL(blob);
-  link.setAttribute('href', url);
-  link.setAttribute('download', `transactions_${new Date().toISOString().split('T')[0]}.csv`);
-  link.style.visibility = 'hidden';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Transactions');
+
+  const fileName = `transactions_${new Date().toISOString().split('T')[0]}.xlsx`;
+  XLSX.writeFile(workbook, fileName);
 };
 
-export const importTransactionsFromCSV = (file: File): Promise<Transaction[]> => {
+export const importTransactionsFromExcel = (file: File): Promise<Transaction[]> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
-        const csv = e.target?.result as string;
-        const lines = csv.split('\n');
-        const transactions: Transaction[] = [];
-        
-        // Skip header row
-        for (let i = 1; i < lines.length; i++) {
-          const line = lines[i].trim();
-          if (line) {
-            const [date, amount, type, account, reason] = line.split(',');
-            transactions.push({
-              id: Date.now().toString() + i,
-              date: date,
-              amount: parseFloat(amount),
-              type: type as 'income' | 'expense',
-              account: account === 'Account 1' ? 'account1' : 'account2',
-              reason: reason.replace(/^"|"$/g, '').replace(/""/g, '"') // Unescape quotes
-            });
-          }
-        }
+        const data = new Uint8Array(e.target?.result as ArrayBuffer);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+        const transactions: Transaction[] = jsonData.map((row: any, index) => ({
+          id: Date.now().toString() + index,
+          date: row.Date || new Date().toISOString().split('T')[0],
+          amount: parseFloat(row.Amount) || 0,
+          type: (row.Type === 'income' ? 'income' : 'expense') as 'income' | 'expense',
+          account: (row.Account === 'Account 1' ? 'account1' : 'account2') as 'account1' | 'account2',
+          reason: row.Reason || 'Imported transaction'
+        }));
+
         resolve(transactions);
       } catch (error) {
         reject(error);
       }
     };
-    reader.readAsText(file);
+    reader.readAsArrayBuffer(file);
   });
 };
