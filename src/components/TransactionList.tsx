@@ -56,8 +56,8 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, isPrevi
             className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
           >
             <option value="all">All Accounts</option>
-            <option value="account1">Account 1</option>
-            <option value="account2">Account 2</option>
+            <option value="account1">Personal Account</option>
+            <option value="account2">Salary Account</option>
           </select>
         </div>
       )}
@@ -86,7 +86,7 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, isPrevi
                 <div className="flex items-center gap-4 text-sm text-gray-600">
                   <span>{transaction.date}</span>
                   <span className="bg-gray-200 px-2 py-1 rounded-full text-xs">
-                    {transaction.account === 'account1' ? 'Account 1' : 'Account 2'}
+                    {transaction.account === 'account1' ? 'Personal Account' : 'Salary Account'}
                   </span>
                 </div>
               </div>

@@ -122,8 +122,8 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onSubmit, onClose }) 
                 onChange={(e) => setFormData(prev => ({ ...prev, account: e.target.value as 'account1' | 'account2' }))}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               >
-                <option value="account1">Account 1</option>
-                <option value="account2">Account 2</option>
+                <option value="account1">Personal Account</option>
+                <option value="account2">Salary Account</option>
               </select>
             </div>
           </div>

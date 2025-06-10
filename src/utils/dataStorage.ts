@@ -28,7 +28,7 @@ export const exportTransactionsToExcel = (transactions: Transaction[]) => {
       Date: t.date,
       Amount: t.amount,
       Type: t.type,
-      Account: t.account === 'account1' ? 'Account 1' : 'Account 2',
+      Account: t.account === 'account1' ? 'Personal Account' : 'Salary Account',
       Reason: t.reason
     }))
   );
@@ -56,7 +56,7 @@ export const importTransactionsFromExcel = (file: File): Promise<Transaction[]> 
           date: row.Date || new Date().toISOString().split('T')[0],
           amount: parseFloat(row.Amount) || 0,
           type: (row.Type === 'income' ? 'income' : 'expense') as 'income' | 'expense',
-          account: (row.Account === 'Account 1' ? 'account1' : 'account2') as 'account1' | 'account2',
+          account: (row.Account === 'Personal Account' ? 'account1' : 'account2') as 'account1' | 'account2',
           reason: row.Reason || 'Imported transaction'
         }));
 

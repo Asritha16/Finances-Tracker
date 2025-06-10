@@ -71,13 +71,13 @@ const Index = () => {
         {/* Compact Balance Overview */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-6">
           <BalanceCard
-            title="Primary Account"
+            title="Personal Account"
             balance={account1Balance}
             icon={<Wallet className="text-white" size={20} />}
             gradient="from-blue-600 to-indigo-700"
           />
           <BalanceCard
-            title="Secondary Account"
+            title="Salary Account"
             balance={account2Balance}
             icon={<Wallet className="text-white" size={20} />}
             gradient="from-emerald-600 to-green-700"
