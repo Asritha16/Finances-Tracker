@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Plus, Wallet } from 'lucide-react';
 import TransactionForm from '../components/TransactionForm';
@@ -48,61 +49,61 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
-        {/* Professional Header */}
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-4 rounded-3xl shadow-2xl">
-              <Wallet className="text-white" size={40} />
+      <div className="container mx-auto px-4 py-6 max-w-6xl">
+        {/* Compact Header */}
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center gap-3 mb-3">
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-3 rounded-2xl shadow-lg">
+              <Wallet className="text-white" size={32} />
             </div>
             <div className="text-left">
-              <h1 className="text-5xl font-bold bg-gradient-to-r from-slate-800 to-blue-800 bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-800 to-blue-800 bg-clip-text text-transparent">
                 FinanceTracker Pro
               </h1>
-              <p className="text-slate-600 text-lg font-medium">Professional Financial Management Suite</p>
+              <p className="text-slate-600 text-sm font-medium">Professional Financial Management</p>
             </div>
           </div>
-          <p className="text-slate-600 text-xl max-w-2xl mx-auto">
-            Secure, local financial tracking with advanced analytics and Excel integration
+          <p className="text-slate-600 text-base max-w-xl mx-auto">
+            Secure, local financial tracking with Excel integration
           </p>
         </div>
 
-        {/* Enhanced Balance Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-10">
+        {/* Compact Balance Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-6">
           <BalanceCard
             title="Primary Account"
             balance={account1Balance}
-            icon={<Wallet className="text-white" size={28} />}
+            icon={<Wallet className="text-white" size={20} />}
             gradient="from-blue-600 to-indigo-700"
           />
           <BalanceCard
             title="Secondary Account"
             balance={account2Balance}
-            icon={<Wallet className="text-white" size={28} />}
+            icon={<Wallet className="text-white" size={20} />}
             gradient="from-emerald-600 to-green-700"
           />
           <BalanceCard
             title="Total Balance"
             balance={account1Balance + account2Balance}
-            icon={<Wallet className="text-white" size={28} />}
+            icon={<Wallet className="text-white" size={20} />}
             gradient="from-purple-600 to-pink-700"
             isTotal={true}
           />
         </div>
 
-        {/* Data Management with Professional Styling */}
+        {/* Compact Data Management */}
         <DataControls 
           transactions={transactions} 
           onImportTransactions={handleImportTransactions}
         />
 
-        {/* Professional Action Button */}
-        <div className="flex justify-center mb-10">
+        {/* Compact Action Button */}
+        <div className="flex justify-center mb-6">
           <button
             onClick={() => setShowForm(true)}
-            className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 text-white px-12 py-4 rounded-2xl font-bold text-lg flex items-center gap-3 shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300"
+            className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 text-white px-8 py-3 rounded-xl font-bold text-base flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
           >
-            <Plus size={24} />
+            <Plus size={20} />
             Add New Transaction
           </button>
         </div>
@@ -115,27 +116,27 @@ const Index = () => {
           />
         )}
 
-        {/* Enhanced Transaction Sections */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-          <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 p-8">
-            <h2 className="text-3xl font-bold text-slate-800 mb-6 flex items-center gap-3">
-              <div className="w-3 h-8 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-full"></div>
+        {/* Compact Transaction Sections */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 p-5">
+            <h2 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+              <div className="w-2 h-6 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-full"></div>
               Recent Activity
             </h2>
             {recentTransactions.length > 0 ? (
               <TransactionList transactions={recentTransactions} isPreview />
             ) : (
-              <div className="text-center text-slate-500 py-12">
-                <Wallet className="mx-auto mb-6 opacity-30" size={64} />
-                <p className="text-xl font-medium">No transactions yet</p>
-                <p className="text-slate-400">Add your first transaction to get started</p>
+              <div className="text-center text-slate-500 py-8">
+                <Wallet className="mx-auto mb-4 opacity-30" size={48} />
+                <p className="text-lg font-medium">No transactions yet</p>
+                <p className="text-slate-400 text-sm">Add your first transaction to get started</p>
               </div>
             )}
           </div>
 
-          <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 p-8">
-            <h2 className="text-3xl font-bold text-slate-800 mb-6 flex items-center gap-3">
-              <div className="w-3 h-8 bg-gradient-to-b from-emerald-500 to-green-600 rounded-full"></div>
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 p-5">
+            <h2 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+              <div className="w-2 h-6 bg-gradient-to-b from-emerald-500 to-green-600 rounded-full"></div>
               All Transactions
             </h2>
             <TransactionList 

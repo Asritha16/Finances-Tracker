@@ -39,34 +39,34 @@ const DataControls: React.FC<DataControlsProps> = ({ transactions, onImportTrans
   };
 
   return (
-    <div className="bg-gradient-to-br from-slate-50 to-blue-50 border border-slate-200 rounded-3xl shadow-xl p-8 mb-8">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-3 rounded-2xl shadow-lg">
-          <Database className="text-white" size={24} />
+    <div className="bg-gradient-to-br from-slate-50 to-blue-50 border border-slate-200 rounded-xl shadow-md p-4 mb-6">
+      <div className="flex items-center gap-2 mb-4">
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-2 rounded-lg shadow-md">
+          <Database className="text-white" size={18} />
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-slate-800">Data Management</h2>
-          <p className="text-slate-600">Secure local storage with Excel backup</p>
+          <h2 className="text-lg font-bold text-slate-800">Data Management</h2>
+          <p className="text-sm text-slate-600">Secure local storage with Excel backup</p>
         </div>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <button
           onClick={handleExport}
-          className="flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-2xl hover:from-emerald-600 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold"
+          className="flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-lg hover:from-emerald-600 hover:to-green-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 font-semibold text-sm"
         >
-          <Download size={20} />
+          <Download size={16} />
           <span>Export to Excel</span>
-          <FileSpreadsheet size={16} className="opacity-80" />
+          <FileSpreadsheet size={14} className="opacity-80" />
         </button>
         
         <button
           onClick={handleImportClick}
-          className="flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-2xl hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold"
+          className="flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 font-semibold text-sm"
         >
-          <Upload size={20} />
+          <Upload size={16} />
           <span>Import from Excel</span>
-          <FileSpreadsheet size={16} className="opacity-80" />
+          <FileSpreadsheet size={14} className="opacity-80" />
         </button>
         
         <input
@@ -78,9 +78,9 @@ const DataControls: React.FC<DataControlsProps> = ({ transactions, onImportTrans
         />
       </div>
       
-      <div className="mt-6 p-4 bg-slate-100 rounded-xl border-l-4 border-blue-500">
-        <p className="text-sm text-slate-700 leading-relaxed">
-          <span className="font-semibold text-blue-700">🔒 Privacy First:</span> Your financial data is stored locally on your device and never transmitted to external servers. Export to Excel for secure backups and analysis.
+      <div className="mt-4 p-3 bg-slate-100 rounded-lg border-l-4 border-blue-500">
+        <p className="text-xs text-slate-700 leading-relaxed">
+          <span className="font-semibold text-blue-700">🔒 Privacy First:</span> Your financial data is stored locally on your device and never transmitted to external servers.
         </p>
       </div>
     </div>
