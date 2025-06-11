@@ -77,12 +77,6 @@ const DataControls: React.FC<DataControlsProps> = ({ transactions, onImportTrans
           className="hidden"
         />
       </div>
-      
-      <div className="mt-4 p-3 bg-slate-100 rounded-lg border-l-4 border-blue-500">
-        <p className="text-xs text-slate-700 leading-relaxed">
-          <span className="font-semibold text-blue-700">🔒 Privacy First:</span> Your financial data is stored locally on your device and never transmitted to external servers.
-        </p>
-      </div>
     </div>
   );
 };

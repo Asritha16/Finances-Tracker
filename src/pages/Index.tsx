@@ -80,7 +80,6 @@ const Index = () => {
               <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-800 to-blue-800 bg-clip-text text-transparent">
                 FinanceTracker Pro
               </h1>
-              <p className="text-slate-600 text-sm font-medium">Professional Financial Management</p>
             </div>
           </div>
           <p className="text-slate-600 text-base max-w-xl mx-auto">
