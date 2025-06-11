@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Edit2, Trash2, Search, Filter, Calendar, DollarSign, User, Tag } from 'lucide-react';
+import { Edit2, Trash2, Search, Filter, Calendar, TrendingUp, TrendingDown, User, Tag } from 'lucide-react';
 import { Transaction } from '../types/Transaction';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
@@ -65,7 +65,7 @@ const TransactionList: React.FC<TransactionListProps> = ({
         className={`${isPersonal 
           ? 'border-blue-200 bg-blue-50 text-blue-700' 
           : 'border-emerald-200 bg-emerald-50 text-emerald-700'
-        } font-medium`}
+        } font-medium text-xs`}
       >
         {isPersonal ? 'Personal' : 'Salary'}
       </Badge>
@@ -77,7 +77,7 @@ const TransactionList: React.FC<TransactionListProps> = ({
       <Card className="border-dashed border-2 border-slate-200">
         <CardContent className="flex flex-col items-center justify-center py-12">
           <div className="bg-gradient-to-br from-slate-100 to-slate-200 p-6 rounded-full mb-4">
-            <DollarSign className="w-12 h-12 text-slate-400" />
+            <TrendingUp className="w-12 h-12 text-slate-400" />
           </div>
           <h3 className="text-xl font-semibold text-slate-600 mb-2">No transactions found</h3>
           <p className="text-slate-500 text-center max-w-sm">
@@ -152,31 +152,31 @@ const TransactionList: React.FC<TransactionListProps> = ({
         {displayTransactions.map((transaction) => (
           <Card key={transaction.id} className="group hover:shadow-lg transition-all duration-300 border-slate-200 hover:border-slate-300">
             <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-start space-x-4 flex-1">
-                  <div className={`p-2 rounded-lg ${getTypeColor(transaction.type)} shadow-md`}>
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center space-x-3 flex-1 min-w-0">
+                  <div className={`p-2 rounded-lg ${getTypeColor(transaction.type)} shadow-md flex-shrink-0`}>
                     {transaction.type === 'income' ? (
-                      <DollarSign className="w-4 h-4" />
+                      <TrendingUp className="w-4 h-4" />
                     ) : (
-                      <DollarSign className="w-4 h-4" />
+                      <TrendingDown className="w-4 h-4" />
                     )}
                   </div>
                   
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
                       <h3 className="font-semibold text-slate-800 truncate">{transaction.reason}</h3>
                       {transaction.category && (
-                        <Badge variant="secondary" className="bg-slate-100 text-slate-600 border-slate-200">
+                        <Badge variant="secondary" className="bg-slate-100 text-slate-600 border-slate-200 text-xs">
                           <Tag className="w-3 h-3 mr-1" />
                           {transaction.category}
                         </Badge>
                       )}
                     </div>
                     
-                    <div className="flex items-center gap-3 text-sm text-slate-600">
+                    <div className="flex items-center gap-3 text-sm text-slate-600 flex-wrap">
                       <div className="flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
-                        {new Date(transaction.date).toLocaleDateString()}
+                        <span className="text-xs">{new Date(transaction.date).toLocaleDateString()}</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <User className="w-3 h-3" />
@@ -186,7 +186,7 @@ const TransactionList: React.FC<TransactionListProps> = ({
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 flex-shrink-0">
                   <div className="text-right">
                     <div className={`text-lg font-bold ${
                       transaction.type === 'income' ? 'text-emerald-600' : 'text-red-600'
