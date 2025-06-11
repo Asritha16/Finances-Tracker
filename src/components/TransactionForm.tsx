@@ -1,8 +1,20 @@
 
 import React, { useState, useEffect } from 'react';
-import { X, Calendar, FileText, CreditCard, Tag } from 'lucide-react';
-import { IndianRupee } from 'lucide-react';
+import { X, Save, DollarSign, Calendar, FileText, Tag, Building } from 'lucide-react';
 import { Transaction } from '../types/Transaction';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { Textarea } from './ui/textarea';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Badge } from './ui/badge';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './ui/select';
 
 interface TransactionFormProps {
   onSubmit: (transaction: Transaction) => void;
@@ -10,44 +22,22 @@ interface TransactionFormProps {
   editTransaction?: Transaction | null;
 }
 
-const TransactionForm: React.FC<TransactionFormProps> = ({ onSubmit, onClose, editTransaction }) => {
+const TransactionForm: React.FC<TransactionFormProps> = ({
+  onSubmit,
+  onClose,
+  editTransaction,
+}) => {
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split('T')[0],
     amount: '',
     reason: '',
     type: 'expense' as 'income' | 'expense',
     account: 'account1' as 'account1' | 'account2',
-    category: ''
+    category: '',
   });
 
-  // Predefined categories based on your account management strategy
-  const expenseCategories = [
-    'Groceries & Food',
-    'Transportation',
-    'Entertainment & Dining',
-    'Shopping & Personal Care',
-    'Utilities',
-    'Rent/EMI',
-    'Insurance',
-    'Medical & Emergency',
-    'Paid for Others (Reimbursable)',
-    'Loans Given',
-    'Investment',
-    'Other'
-  ];
+  const [errors, setErrors] = useState<{[key: string]: string}>({});
 
-  const incomeCategories = [
-    'Salary',
-    'Freelance',
-    'Investment Returns',
-    'Interest',
-    'Reimbursement Received',
-    'Loan Repayment Received',
-    'Gift/Bonus',
-    'Other'
-  ];
-
-  // Populate form if editing
   useEffect(() => {
     if (editTransaction) {
       setFormData({
@@ -56,160 +46,229 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onSubmit, onClose, ed
         reason: editTransaction.reason,
         type: editTransaction.type,
         account: editTransaction.account,
-        category: editTransaction.category || ''
+        category: editTransaction.category || '',
       });
     }
   }, [editTransaction]);
 
+  const categories = [
+    'Groceries & Food', 'Transportation', 'Entertainment', 'Shopping', 
+    'Utilities', 'Healthcare', 'Education', 'Investment', 'Salary',
+    'Freelance', 'Rent/EMI', 'Insurance', 'Emergency', 'Reimbursement',
+    'Loan', 'Gift', 'Others'
+  ];
+
+  const validateForm = () => {
+    const newErrors: {[key: string]: string} = {};
+
+    if (!formData.amount || parseFloat(formData.amount) <= 0) {
+      newErrors.amount = 'Amount must be greater than 0';
+    }
+    if (!formData.reason.trim()) {
+      newErrors.reason = 'Reason is required';
+    }
+    if (!formData.date) {
+      newErrors.date = 'Date is required';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.amount || !formData.reason) {
-      alert('Please fill in all required fields');
-      return;
-    }
+    if (!validateForm()) return;
 
     const transaction: Transaction = {
-      id: editTransaction ? editTransaction.id : Date.now().toString(),
+      id: editTransaction?.id || Date.now().toString(),
       date: formData.date,
       amount: parseFloat(formData.amount),
       reason: formData.reason,
       type: formData.type,
       account: formData.account,
-      category: formData.category || undefined
+      category: formData.category || undefined,
     };
 
     onSubmit(transaction);
   };
 
-  const currentCategories = formData.type === 'income' ? incomeCategories : expenseCategories;
+  const getAccountLabel = (account: string) => {
+    return account === 'account1' ? 'Personal Account' : 'Salary Account';
+  };
+
+  const getTypeColor = (type: string) => {
+    return type === 'income' 
+      ? 'bg-gradient-to-r from-emerald-500 to-green-600' 
+      : 'bg-gradient-to-r from-red-500 to-pink-600';
+  };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md transform transition-all max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h3 className="text-2xl font-bold text-gray-800">
-            {editTransaction ? 'Edit Transaction' : 'Add Transaction'}
-          </h3>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            <X size={24} />
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                <Calendar className="inline mr-2" size={16} />
-                Date
-              </label>
-              <input
-                type="date"
-                value={formData.date}
-                onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                <IndianRupee className="inline mr-2" size={16} />
-                Amount
-              </label>
-              <input
-                type="number"
-                step="0.01"
-                value={formData.amount}
-                onChange={(e) => setFormData(prev => ({ ...prev, amount: e.target.value }))}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                placeholder="0.00"
-                required
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              <FileText className="inline mr-2" size={16} />
-              Reason/Description
-            </label>
-            <input
-              type="text"
-              value={formData.reason}
-              onChange={(e) => setFormData(prev => ({ ...prev, reason: e.target.value }))}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-              placeholder="What was this transaction for?"
-              required
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
-              <select
-                value={formData.type}
-                onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as 'income' | 'expense', category: '' }))}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-              >
-                <option value="expense">Expense</option>
-                <option value="income">Income</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                <CreditCard className="inline mr-2" size={16} />
-                Account
-              </label>
-              <select
-                value={formData.account}
-                onChange={(e) => setFormData(prev => ({ ...prev, account: e.target.value as 'account1' | 'account2' }))}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-              >
-                <option value="account1">Personal Account</option>
-                <option value="account2">Salary Account</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              <Tag className="inline mr-2" size={16} />
-              Category (Optional)
-            </label>
-            <select
-              value={formData.category}
-              onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-            >
-              <option value="">Select Category</option>
-              {currentCategories.map(category => (
-                <option key={category} value={category}>{category}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="flex gap-3 pt-4">
-            <button
-              type="button"
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+      <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white shadow-2xl border-0">
+        <CardHeader className="bg-gradient-to-r from-slate-50 to-blue-50 border-b border-slate-200">
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-3 text-slate-800">
+              <div className={`p-2 rounded-lg ${getTypeColor(formData.type)} text-white shadow-md`}>
+                <DollarSign className="w-5 h-5" />
+              </div>
+              {editTransaction ? 'Edit Transaction' : 'Add New Transaction'}
+            </CardTitle>
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={onClose}
-              className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+              className="h-8 w-8 p-0 hover:bg-slate-200"
             >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transform hover:scale-105 transition-all font-medium"
-            >
-              {editTransaction ? 'Update Transaction' : 'Add Transaction'}
-            </button>
+              <X className="w-4 h-4" />
+            </Button>
           </div>
-        </form>
-      </div>
+        </CardHeader>
+
+        <CardContent className="p-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Type and Account Selection */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-slate-700 font-medium">Transaction Type</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button
+                    type="button"
+                    variant={formData.type === 'income' ? 'default' : 'outline'}
+                    onClick={() => setFormData({...formData, type: 'income'})}
+                    className={`${formData.type === 'income' 
+                      ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white' 
+                      : 'border-emerald-200 text-emerald-700 hover:bg-emerald-50'
+                    }`}
+                  >
+                    Income
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={formData.type === 'expense' ? 'default' : 'outline'}
+                    onClick={() => setFormData({...formData, type: 'expense'})}
+                    className={`${formData.type === 'expense' 
+                      ? 'bg-gradient-to-r from-red-500 to-pink-600 text-white' 
+                      : 'border-red-200 text-red-700 hover:bg-red-50'
+                    }`}
+                  >
+                    Expense
+                  </Button>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-slate-700 font-medium">Account</Label>
+                <Select value={formData.account} onValueChange={(value) => setFormData({...formData, account: value as 'account1' | 'account2'})}>
+                  <SelectTrigger className="bg-white border-slate-200">
+                    <Building className="w-4 h-4 mr-2 text-slate-500" />
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="account1">
+                      <div className="flex items-center gap-2">
+                        <Badge className="bg-blue-100 text-blue-700 border-blue-200">Personal</Badge>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="account2">
+                      <div className="flex items-center gap-2">
+                        <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200">Salary</Badge>
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Date and Amount */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="date" className="text-slate-700 font-medium">
+                  <Calendar className="w-4 h-4 inline mr-2" />
+                  Date
+                </Label>
+                <Input
+                  id="date"
+                  type="date"
+                  value={formData.date}
+                  onChange={(e) => setFormData({...formData, date: e.target.value})}
+                  className={`bg-white border-slate-200 ${errors.date ? 'border-red-300' : ''}`}
+                />
+                {errors.date && <p className="text-red-500 text-sm">{errors.date}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="amount" className="text-slate-700 font-medium">
+                  <DollarSign className="w-4 h-4 inline mr-2" />
+                  Amount (₹)
+                </Label>
+                <Input
+                  id="amount"
+                  type="number"
+                  placeholder="0.00"
+                  value={formData.amount}
+                  onChange={(e) => setFormData({...formData, amount: e.target.value})}
+                  className={`bg-white border-slate-200 ${errors.amount ? 'border-red-300' : ''}`}
+                />
+                {errors.amount && <p className="text-red-500 text-sm">{errors.amount}</p>}
+              </div>
+            </div>
+
+            {/* Category */}
+            <div className="space-y-2">
+              <Label className="text-slate-700 font-medium">
+                <Tag className="w-4 h-4 inline mr-2" />
+                Category
+              </Label>
+              <Select value={formData.category} onValueChange={(value) => setFormData({...formData, category: value})}>
+                <SelectTrigger className="bg-white border-slate-200">
+                  <SelectValue placeholder="Select a category (optional)" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map(category => (
+                    <SelectItem key={category} value={category}>{category}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Reason */}
+            <div className="space-y-2">
+              <Label htmlFor="reason" className="text-slate-700 font-medium">
+                <FileText className="w-4 h-4 inline mr-2" />
+                Reason/Description
+              </Label>
+              <Textarea
+                id="reason"
+                placeholder="Enter transaction details..."
+                value={formData.reason}
+                onChange={(e) => setFormData({...formData, reason: e.target.value})}
+                className={`bg-white border-slate-200 min-h-[100px] ${errors.reason ? 'border-red-300' : ''}`}
+              />
+              {errors.reason && <p className="text-red-500 text-sm">{errors.reason}</p>}
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex justify-end gap-3 pt-4 border-t border-slate-200">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onClose}
+                className="border-slate-200 text-slate-600 hover:bg-slate-50"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-md"
+              >
+                <Save className="w-4 h-4 mr-2" />
+                {editTransaction ? 'Update Transaction' : 'Add Transaction'}
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 };
