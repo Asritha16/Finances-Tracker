@@ -29,6 +29,7 @@ export const exportTransactionsToExcel = (transactions: Transaction[]) => {
       Amount: t.amount,
       Type: t.type,
       Account: t.account === 'account1' ? 'Personal Account' : 'Salary Account',
+      Category: t.category || 'Uncategorized',
       Reason: t.reason
     }))
   );
@@ -57,6 +58,7 @@ export const importTransactionsFromExcel = (file: File): Promise<Transaction[]> 
           amount: parseFloat(row.Amount) || 0,
           type: (row.Type === 'income' ? 'income' : 'expense') as 'income' | 'expense',
           account: (row.Account === 'Personal Account' ? 'account1' : 'account2') as 'account1' | 'account2',
+          category: row.Category && row.Category !== 'Uncategorized' ? row.Category : undefined,
           reason: row.Reason || 'Imported transaction'
         }));
 

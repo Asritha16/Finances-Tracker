@@ -6,4 +6,5 @@ export interface Transaction {
   reason: string;
   type: 'income' | 'expense';
   account: 'account1' | 'account2';
+  category?: string;
 }

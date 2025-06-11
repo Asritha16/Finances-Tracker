@@ -11,6 +11,7 @@ import { saveTransactionsToStorage, loadTransactionsFromStorage } from '../utils
 const Index = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [showForm, setShowForm] = useState(false);
+  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
 
   // Load transactions from localStorage on component mount
   useEffect(() => {
@@ -24,12 +25,26 @@ const Index = () => {
   }, [transactions]);
 
   const addTransaction = (transaction: Transaction) => {
-    setTransactions(prev => [transaction, ...prev]);
+    if (editingTransaction) {
+      // Update existing transaction
+      setTransactions(prev => 
+        prev.map(t => t.id === transaction.id ? transaction : t)
+      );
+      setEditingTransaction(null);
+    } else {
+      // Add new transaction
+      setTransactions(prev => [transaction, ...prev]);
+    }
     setShowForm(false);
   };
 
   const deleteTransaction = (id: string) => {
     setTransactions(prev => prev.filter(transaction => transaction.id !== id));
+  };
+
+  const editTransaction = (transaction: Transaction) => {
+    setEditingTransaction(transaction);
+    setShowForm(true);
   };
 
   const handleImportTransactions = (importedTransactions: Transaction[]) => {
@@ -46,6 +61,11 @@ const Index = () => {
   const account2Balance = calculateBalance('account2');
 
   const recentTransactions = transactions.slice(0, 5);
+
+  const handleCloseForm = () => {
+    setShowForm(false);
+    setEditingTransaction(null);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
@@ -112,7 +132,8 @@ const Index = () => {
         {showForm && (
           <TransactionForm
             onSubmit={addTransaction}
-            onClose={() => setShowForm(false)}
+            onClose={handleCloseForm}
+            editTransaction={editingTransaction}
           />
         )}
 
@@ -142,6 +163,7 @@ const Index = () => {
             <TransactionList 
               transactions={transactions} 
               onDeleteTransaction={deleteTransaction}
+              onEditTransaction={editTransaction}
             />
           </div>
         </div>
