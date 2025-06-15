@@ -6,6 +6,7 @@ import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
+import { ScrollArea } from './ui/scroll-area';
 import {
   Select,
   SelectContent,
@@ -148,83 +149,85 @@ const TransactionList: React.FC<TransactionListProps> = ({
         </Card>
       )}
 
-      <div className="space-y-3">
-        {displayTransactions.map((transaction) => (
-          <Card key={transaction.id} className="group hover:shadow-lg transition-all duration-300 border-slate-200 hover:border-slate-300">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center space-x-3 flex-1 min-w-0">
-                  <div className={`p-2 rounded-lg ${getTypeColor(transaction.type)} shadow-md flex-shrink-0`}>
-                    {transaction.type === 'income' ? (
-                      <TrendingUp className="w-4 h-4" />
-                    ) : (
-                      <TrendingDown className="w-4 h-4" />
-                    )}
-                  </div>
-                  
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1 flex-wrap">
-                      <h3 className="font-semibold text-slate-800 truncate">{transaction.reason}</h3>
-                      {transaction.category && (
-                        <Badge variant="secondary" className="bg-slate-100 text-slate-600 border-slate-200 text-xs">
-                          <Tag className="w-3 h-3 mr-1" />
-                          {transaction.category}
-                        </Badge>
+      <ScrollArea className="h-[600px]">
+        <div className="space-y-3 pr-4">
+          {displayTransactions.map((transaction) => (
+            <Card key={transaction.id} className="group hover:shadow-lg transition-all duration-300 border-slate-200 hover:border-slate-300">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-center space-x-3 flex-1 min-w-0">
+                    <div className={`p-2 rounded-lg ${getTypeColor(transaction.type)} shadow-md flex-shrink-0`}>
+                      {transaction.type === 'income' ? (
+                        <TrendingUp className="w-4 h-4" />
+                      ) : (
+                        <TrendingDown className="w-4 h-4" />
                       )}
                     </div>
                     
-                    <div className="flex items-center gap-3 text-sm text-slate-600 flex-wrap">
-                      <div className="flex items-center gap-1">
-                        <Calendar className="w-3 h-3" />
-                        <span className="text-xs">{new Date(transaction.date).toLocaleDateString()}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1 flex-wrap">
+                        <h3 className="font-semibold text-slate-800 truncate">{transaction.reason}</h3>
+                        {transaction.category && (
+                          <Badge variant="secondary" className="bg-slate-100 text-slate-600 border-slate-200 text-xs">
+                            <Tag className="w-3 h-3 mr-1" />
+                            {transaction.category}
+                          </Badge>
+                        )}
                       </div>
-                      <div className="flex items-center gap-1">
-                        <User className="w-3 h-3" />
-                        {getAccountBadge(transaction.account)}
+                      
+                      <div className="flex items-center gap-3 text-sm text-slate-600 flex-wrap">
+                        <div className="flex items-center gap-1">
+                          <Calendar className="w-3 h-3" />
+                          <span className="text-xs">{new Date(transaction.date).toLocaleDateString()}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <User className="w-3 h-3" />
+                          {getAccountBadge(transaction.account)}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="flex items-center gap-3 flex-shrink-0">
-                  <div className="text-right">
-                    <div className={`text-lg font-bold ${
-                      transaction.type === 'income' ? 'text-emerald-600' : 'text-red-600'
-                    }`}>
-                      {transaction.type === 'income' ? '+' : '-'}₹{transaction.amount.toLocaleString('en-IN')}
+                  <div className="flex items-center gap-3 flex-shrink-0">
+                    <div className="text-right">
+                      <div className={`text-lg font-bold ${
+                        transaction.type === 'income' ? 'text-emerald-600' : 'text-red-600'
+                      }`}>
+                        {transaction.type === 'income' ? '+' : '-'}₹{transaction.amount.toLocaleString('en-IN')}
+                      </div>
                     </div>
+
+                    {!isPreview && (onEditTransaction || onDeleteTransaction) && (
+                      <div className="flex gap-2">
+                        {onEditTransaction && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => onEditTransaction(transaction)}
+                            className="hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300"
+                          >
+                            <Edit2 className="w-4 h-4" />
+                          </Button>
+                        )}
+                        {onDeleteTransaction && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => onDeleteTransaction(transaction.id)}
+                            className="hover:bg-red-50 hover:text-red-600 hover:border-red-300"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        )}
+                      </div>
+                    )}
                   </div>
-
-                  {!isPreview && (onEditTransaction || onDeleteTransaction) && (
-                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      {onEditTransaction && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => onEditTransaction(transaction)}
-                          className="h-8 w-8 p-0 hover:bg-blue-50 hover:text-blue-600"
-                        >
-                          <Edit2 className="w-4 h-4" />
-                        </Button>
-                      )}
-                      {onDeleteTransaction && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => onDeleteTransaction(transaction.id)}
-                          className="h-8 w-8 p-0 hover:bg-red-50 hover:text-red-600"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      )}
-                    </div>
-                  )}
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </ScrollArea>
 
       {!isPreview && filteredTransactions.length === 0 && transactions.length > 0 && (
         <Card className="border-dashed border-2 border-slate-200">
